@@ -1,59 +1,59 @@
 ﻿function QuizViewModel() {
-    var e = this;
-    e.quizState = ko.observable("start");
-    e.currentQuestion = ko.observable(0);
-    e.correctAnswersVisible = ko.observable(false);
-    e.questions = ko.observableArray(questionData);
-    e.startQuiz = function () {
-        e.quizState("inGame")
+    var self = this;
+    self.quizState = ko.observable("start");
+    self.currentQuestion = ko.observable(0);
+    self.correctAnswersVisible = ko.observable(false);
+    self.questions = ko.observableArray(questionData);
+    self.startQuiz = function () {
+        self.quizState("inGame")
     };
-    e.displayQuestion = ko.computed(function () {
-        return e.questions()[e.currentQuestion()]["question"]
+    self.displayQuestion = ko.computed(function () {
+        return self.questions()[self.currentQuestion()]["question"]
     });
-    e.displayAnswers = ko.computed(function () {
-        return e.questions()[e.currentQuestion()]["answers"]
+    self.displayAnswers = ko.computed(function () {
+        return self.questions()[self.currentQuestion()]["answers"]
     });
-    e.answerIsChecked = function () {
-        return e.questions()[e.currentQuestion()].currentAnswer()
+    self.answerIsChecked = function () {
+        return self.questions()[self.currentQuestion()].currentAnswer()
     };
-    e.questionsCount = function () {
-        return e.questions().length
+    self.questionsCount = function () {
+        return self.questions().length
     };
-    e.questionNumber = function () {
-        return e.currentQuestion() + 1
+    self.questionNumber = function () {
+        return self.currentQuestion() + 1
     };
-    e.gotoPrevious = function () {
-        var t = e.currentQuestion();
-        if (t > 0) {
-            e.currentQuestion(t - 1);
+    self.gotoPrevious = function () {
+        var current = self.currentQuestion();
+        if (current > 0) {
+            self.currentQuestion(current - 1);
             $("#alert-area").addClass("hide")
         }
     };
-    e.gotoNext = function () {
-        var t = e.currentQuestion();
-        if (t + 1 < e.questionsCount() && e.questions()[t]["currentAnswer"]() !== -2) {
-            e.currentQuestion(t + 1);
+    self.gotoNext = function () {
+        var current = self.currentQuestion();
+        if (current + 1 < self.questionsCount() && self.questions()[current]["currentAnswer"]() !== -2) {
+            self.currentQuestion(t + 1);
             $("#alert-area").addClass("hide")
         }
     };
-    e.previousDisabled = function () {
-        if (e.currentQuestion() === 0) {
+    self.previousDisabled = function () {
+        if (self.currentQuestion() === 0) {
             return true
         } else {
             return false
         }
     };
-    e.nextDisabled = function () {
-        var t = e.currentQuestion();
-        if (e.questionsCount() <= t + 1 || e.questions()[t].currentAnswer() === -2) {
+    self.nextDisabled = function () {
+        var current = self.currentQuestion();
+        if (self.questionsCount() <= current + 1 || self.questions()[current].currentAnswer() === -2) {
             return true
         } else {
             return false
         }
     };
-    e.submitAnswer = function () {
-        var t = e.currentQuestion();
-        var n = e.questions()[t]["answers"].length;
+    self.submitAnswer = function () {
+        var current = self.currentQuestion();
+        var n = self.questions()[t]["answers"].length;
         var r = $("ul#answers input:radio:checked").val();
         var i = true;
         if (typeof r === "undefined") {
@@ -68,68 +68,68 @@
             $("#alert-area").removeClass("hide")
         } else {
             $("#alert-area").addClass("hide");
-            e.questions()[t].currentAnswer(r);
-            var s = e.currentQuestion();
-            if (s === e.questionsCount() - 1) {
-                e.quizState("results")
+            self.questions()[current].currentAnswer(r);
+            var s = self.currentQuestion();
+            if (s === self.questionsCount() - 1) {
+                self.quizState("results")
             } else {
-                e.currentQuestion(s + 1)
+                self.currentQuestion(s + 1)
             }
         }
     };
-    e.answersCorrect = function () {
+    self.answersCorrect = function () {
         var t = 0;
-        for (var n = 0; n < e.questionsCount() ; n++) {
-            if (e.questions()[n]["currentAnswer"]() !== -2) {
-                if (e.questions()[n]["currentAnswer"]() === e.questions()[n]["correctAnswer"]) {
+        for (var n = 0; n < self.questionsCount() ; n++) {
+            if (self.questions()[n]["currentAnswer"]() !== -2) {
+                if (self.questions()[n]["currentAnswer"]() === self.questions()[n]["correctAnswer"]) {
                     t++
                 }
             }
         }
         return t
     };
-    e.answersIncorrect = function () {
+    self.answersIncorrect = function () {
         var t = 0;
-        for (var n = 0; n < e.questionsCount() ; n++) {
-            if (e.questions()[n]["currentAnswer"]() !== -2) {
-                if (e.questions()[n]["currentAnswer"]() !== -1 && e.questions()[n]["currentAnswer"]() !== e.questions()[n]["correctAnswer"]) {
+        for (var n = 0; n < self.questionsCount() ; n++) {
+            if (self.questions()[n]["currentAnswer"]() !== -2) {
+                if (self.questions()[n]["currentAnswer"]() !== -1 && self.questions()[n]["currentAnswer"]() !== self.questions()[n]["correctAnswer"]) {
                     t++
                 }
             }
         }
         return t
     };
-    e.answersSkipped = function () {
+    self.answersSkipped = function () {
         var t = 0;
-        for (var n = 0; n < e.questionsCount() ; n++) {
-            if (e.questions()[n]["currentAnswer"]() !== -2) {
-                if (e.questions()[n]["currentAnswer"]() === -1) {
+        for (var n = 0; n < self.questionsCount() ; n++) {
+            if (self.questions()[n]["currentAnswer"]() !== -2) {
+                if (self.questions()[n]["currentAnswer"]() === -1) {
                     t++
                 }
             }
         }
         return t
     };
-    e.displayCorrectAnswers = function () {
+    self.displayCorrectAnswers = function () {
         var t = [];
-        for (var n = 0; n < e.questionsCount() ; n++) {
-            var r = e.questions()[n]["correctAnswer"];
-            var i = e.questions()[n]["currentAnswer"]();
+        for (var n = 0; n < self.questionsCount() ; n++) {
+            var r = self.questions()[n]["correctAnswer"];
+            var i = self.questions()[n]["currentAnswer"]();
             var s = "";
             var o = "";
             if (i === -1) {
                 s = "Skipped";
                 o = "skipped summary-skipped"
             } else if (i !== -2) {
-                s = e.questions()[n]["answers"][i].answer;
+                s = self.questions()[n]["answers"][i].answer;
                 if (i === r) {
                     o = "correct"
                 } else {
                     o = "incorrect"
                 }
             }
-            var u = e.questions()[n].question;
-            var a = e.questions()[n]["answers"][r].answer;
+            var u = self.questions()[n].question;
+            var a = self.questions()[n]["answers"][r].answer;
             t.push({
                 number: n + 1,
                 question: u,
@@ -140,13 +140,13 @@
         }
         return t
     };
-    e.pointsTotal = function () {
+    self.pointsTotal = function () {
         var t = 0;
-        for (var n = 0; n < e.questionsCount() ; n++) {
-            var r = e.questions()[n]["currentAnswer"]();
+        for (var n = 0; n < self.questionsCount() ; n++) {
+            var r = self.questions()[n]["currentAnswer"]();
             if (r >= 0) {
-                var i = e.questions()[n]["correctAnswer"];
-                var s = e.questions()[n]["currentAnswer"]();
+                var i = self.questions()[n]["correctAnswer"];
+                var s = self.questions()[n]["currentAnswer"]();
                 if (i === s) {
                     t++
                 } else {
@@ -156,19 +156,19 @@
         }
         return t
     };
-    e.toggleCorrectAnswerVisibility = function () {
-        if (e.correctAnswersVisible() === true) {
-            e.correctAnswersVisible(false)
+    self.toggleCorrectAnswerVisibility = function () {
+        if (self.correctAnswersVisible() === true) {
+            self.correctAnswersVisible(false)
         } else {
-            e.correctAnswersVisible(true)
+            self.correctAnswersVisible(true)
         }
     };
-    e.restart = function () {
-        for (var t = 0; t < e.questionsCount() ; t++) {
-            e.questions()[t]["currentAnswer"](-2)
+    self.restart = function () {
+        for (var t = 0; t < self.questionsCount() ; t++) {
+            self.questions()[t]["currentAnswer"](-2)
         }
-        e.currentQuestion(0);
-        e.quizState("inGame");
-        e.correctAnswersVisible(false)
+        self.currentQuestion(0);
+        self.quizState("inGame");
+        self.correctAnswersVisible(false)
     }
 }
